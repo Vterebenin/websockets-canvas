@@ -1,0 +1,17 @@
+{
+  "env": {
+    "plugins": ["@babel/plugin-proposal-optional-chaining"],
+    "test": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "targets": {
+              "node": "current"
+            }
+          }
+        ]
+      ]
+    }
+  }
+}
