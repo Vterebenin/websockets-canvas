@@ -9,12 +9,19 @@ export default {
   mounted () {
     const canvas = this.$refs.game
     if (canvas.getContext) {
+      const requestAnimationFrame =
+        window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame || window.msRequestAnimationFrame
+      window.requestAnimationFrame = requestAnimationFrame
+      const ctx = canvas.getContext('2d')
       canvas.width = document.documentElement.clientWidth
       canvas.height = document.documentElement.clientHeight
       const player = new Player({ color: 'red' })
-      const ctx = canvas.getContext('2d')
-      ctx.fillStyle = player.color
-      ctx.fillRect(player.position.x, player.position.y, player.width, player.height)
+      player.ctx = ctx
+      player.requestAnimationFrame = requestAnimationFrame
+      window.addEventListener('load', () => {
+        player.update()
+      })
     } else {
       // whatever
     }

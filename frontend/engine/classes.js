@@ -5,7 +5,7 @@ export class Block {
     this.position = args?.position || { x: 100, y: 100 }
     this.texture = args?.texture || ''
     this.color = args?.color || 'red'
-    this.solid = args?.solid || false
+    this.solid = args?.solid || true
   }
 
   get style () {
@@ -22,15 +22,29 @@ export class Block {
 }
 
 export class Player extends Block {
-  constructor (props, args) {
-    super(props)
+  constructor (args) {
+    super()
     this.width = args?.width || 20
     this.height = args?.height || 20
     this.position = args?.position || {
       x: document.documentElement.clientWidth / 2,
       y: document.documentElement.clientHeight - this.height
     }
+    this.ctx = null
+    this.requestAnimationFrame = null
     this.health = args?.health || 250
+  }
+
+  update () {
+    const {
+      color, position: { x, y },
+      width, height, update,
+      requestAnimationFrame, ctx
+    } = this
+    // console.log(color, '123qwe')
+    ctx.fillStyle = color
+    ctx.fillRect(x, y, width, height)
+    requestAnimationFrame(update.bind(this))
   }
 }
 
