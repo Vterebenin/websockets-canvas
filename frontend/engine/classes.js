@@ -1,94 +1,112 @@
+export const gameField = {
+  width: document.documentElement.clientWidth,
+  height: document.documentElement.clientHeight
+}
+
 export class Block {
   constructor (args) {
     this.width = args?.width || 100
     this.height = args?.height || 100
     this.position = args?.position || { x: 100, y: 100 }
     this.texture = args?.texture || ''
-    this.color = args?.color || 'red'
-    this.solid = args?.solid || true
+    this.color = args?.color
+    this.ctx = args?.ctx || null
+    this.requestAnimationFrame = args?.requestAnimationFrame || null
   }
 
-  get style () {
-    const { height, width, position, color } = this
-    return `
-      height: ${height}px; 
-      width: ${width}px; 
-      position: absolute; 
-      bottom: ${position.y}px; 
-      left: ${position.x}px;
-      background: ${color};
-    `
+  update () {
+    const { ctx, color, width, height, update } = this
+    ctx.clearRect(0, 0, gameField.width, gameField.height)
+    ctx.fillStyle = color
+    ctx.fillRect(this.position.x, this.position.y, width, height)
+    requestAnimationFrame(update.bind(this))
+  }
+
+  draw (ctx) {
+    ctx.fillStyle = this.color
+    ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
   }
 }
 
-export class Player extends Block {
+export class Player {
   constructor (args) {
-    super()
     this.width = args?.width || 20
     this.height = args?.height || 20
     this.position = args?.position || {
-      x: document.documentElement.clientWidth / 2,
-      y: document.documentElement.clientHeight - this.height
+      x: gameField.width / 2,
+      y: gameField.height - this.height
     }
-    this.ctx = null
-    this.requestAnimationFrame = null
+    this.color = args?.color || 'red'
+    this.solid = args?.solid || true
+    this.ctx = args?.ctx || null
+    this.requestAnimationFrame = args?.requestAnimationFrame || null
     this.health = args?.health || 250
     this.speed = 3
     this.velX = 0
     this.velY = 0
-    this.keys = []
-    this.gameField = {
-      width: document.documentElement.clientWidth,
-      height: document.documentElement.clientHeight
-    }
+    this.keys = args?.keys || []
     this.friction = 0.8
     this.gravity = 0.3
     this.jumping = false
   }
+}
+
+export class Updater {
+  constructor (args) {
+    this.player = args?.player
+    this.blocks = args?.blocks || []
+    this.keys = args?.keys || {}
+    this.ctx = args?.ctx
+    this.requestAnimationFrame = args?.requestAnimationFrame
+  }
 
   update () {
-    const {
-      color, width, height, update, velX, speed,
-      requestAnimationFrame, ctx, keys, friction, gravity
-    } = this
+    const { player, blocks, keys, ctx, requestAnimationFrame, update } = this
 
     if (keys[38] || keys[32]) {
       // up arrow
-      if (!this.jumping) {
-        this.jumping = true
-        this.velY = -this.speed * 2
+      if (!player.jumping) {
+        player.jumping = true
+        player.velY = -player.speed * 2
       }
     }
     if (keys[39]) {
-      if (velX < speed) {
-        this.velX++
+      if (player.velX < player.speed) {
+        player.velX++
       }
     }
     if (keys[37]) {
-      if (velX > -speed) {
-        this.velX--
+      if (player.velX > -player.speed) {
+        player.velX--
       }
     }
 
-    this.velX *= friction
-    this.velY += gravity
+    ctx.clearRect(0, 0, gameField.width, gameField.height)
 
-    this.position.x += this.velX
-    this.position.y += this.velY
-
-    if (this.position.x >= this.gameField.width - width) {
-      this.position.x = this.gameField.width - width
-    } else if (this.position.x <= 0) {
-      this.position.x = 0
-    }
-    if (this.position.y >= this.gameField.height - height) {
-      this.position.y = this.gameField.height - height
-      this.jumping = false
+    for (const block of blocks) {
+      block.draw(ctx)
     }
 
-    ctx.clearRect(0, 0, this.gameField.width, this.gameField.height)
-    ctx.fillStyle = color
-    ctx.fillRect(this.position.x, this.position.y, width, height)
+    // Player
+    // TODO: Вынести в функции плеера?
+    player.velX *= player.friction
+    player.velY += player.gravity
+
+    player.position.x += player.velX
+    player.position.y += player.velY
+
+    if (player.position.x >= gameField.width - player.width) {
+      player.position.x = gameField.width - player.width
+    } else if (player.position.x <= 0) {
+      player.position.x = 0
+    }
+    if (player.position.y >= gameField.height - player.height) {
+      player.position.y = gameField.height - player.height
+      player.jumping = false
+    }
+
+    ctx.fillStyle = player.color
+    ctx.fillRect(player.position.x, player.position.y, player.width, player.height)
     requestAnimationFrame(update.bind(this))
   }
 }

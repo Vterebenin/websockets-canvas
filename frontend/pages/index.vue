@@ -3,41 +3,37 @@
 </template>
 
 <script>
-import { initKeys, keys } from '@/engine/updater'
-import { Player } from '@/engine/classes'
+import { initKeys } from '@/engine/updater'
+import { Player, Block, Updater, gameField } from '@/engine/classes'
 
 export default {
   data () {
     return {
-      keys
+      keys: {}
     }
   },
   mounted () {
     const canvas = this.$refs.game
     if (canvas.getContext) {
+      const { keys } = this
       const requestAnimationFrame =
         window.requestAnimationFrame || window.mozRequestAnimationFrame ||
         window.webkitRequestAnimationFrame || window.msRequestAnimationFrame
       window.requestAnimationFrame = requestAnimationFrame
       const ctx = canvas.getContext('2d')
-      canvas.width = document.documentElement.clientWidth
-      canvas.height = document.documentElement.clientHeight
-      initKeys(this.keys)
+      canvas.width = gameField.width
+      canvas.height = gameField.height
+      initKeys(keys)
 
-      const player = new Player({ color: 'red' })
-      player.ctx = ctx
-      player.requestAnimationFrame = requestAnimationFrame
-      player.keys = this.keys
+      const player = new Player({ color: 'red', ctx, requestAnimationFrame, keys })
+      const block = new Block({ color: 'blue', ctx, requestAnimationFrame })
+      const blocks = [block]
+      const updater = new Updater({ player, blocks, keys, ctx, requestAnimationFrame })
       window.addEventListener('load', () => {
-        player.update()
+        updater.update()
       })
     } else {
       // whatever
-    }
-  },
-  watch: {
-    keys () {
-      console.log(this.keys)
     }
   }
 }
