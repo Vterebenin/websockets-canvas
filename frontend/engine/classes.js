@@ -33,17 +33,62 @@ export class Player extends Block {
     this.ctx = null
     this.requestAnimationFrame = null
     this.health = args?.health || 250
+    this.speed = 3
+    this.velX = 0
+    this.velY = 0
+    this.keys = []
+    this.gameField = {
+      width: document.documentElement.clientWidth,
+      height: document.documentElement.clientHeight
+    }
+    this.friction = 0.8
+    this.gravity = 0.3
+    this.jumping = false
   }
 
   update () {
     const {
-      color, position: { x, y },
-      width, height, update,
-      requestAnimationFrame, ctx
+      color, width, height, update, velX, speed,
+      requestAnimationFrame, ctx, keys, friction, gravity
     } = this
-    // console.log(color, '123qwe')
+
+    if (keys[38] || keys[32]) {
+      // up arrow
+      if (!this.jumping) {
+        this.jumping = true
+        this.velY = -this.speed * 2
+      }
+    }
+    if (keys[39]) {
+      if (velX < speed) {
+        this.velX++
+      }
+    }
+    if (keys[37]) {
+      if (velX > -speed) {
+        this.velX--
+      }
+    }
+
+    this.velX *= friction
+    this.velY += gravity
+
+    this.position.x += this.velX
+    this.position.y += this.velY
+
+    if (this.position.x >= this.gameField.width - width) {
+      this.position.x = this.gameField.width - width
+    } else if (this.position.x <= 0) {
+      this.position.x = 0
+    }
+    if (this.position.y >= this.gameField.height - height) {
+      this.position.y = this.gameField.height - height
+      this.jumping = false
+    }
+
+    ctx.clearRect(0, 0, this.gameField.width, this.gameField.height)
     ctx.fillStyle = color
-    ctx.fillRect(x, y, width, height)
+    ctx.fillRect(this.position.x, this.position.y, width, height)
     requestAnimationFrame(update.bind(this))
   }
 }
