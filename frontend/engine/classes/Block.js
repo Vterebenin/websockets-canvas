@@ -5,8 +5,6 @@ export class Block {
     this.position = args?.position || { x: 100, y: 100 }
     this.texture = args?.texture || ''
     this.color = args?.color
-    this.ctx = args?.ctx || null
-    this.requestAnimationFrame = args?.requestAnimationFrame || null
   }
 
   drawYourself (ctx) {

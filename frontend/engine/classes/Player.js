@@ -11,8 +11,6 @@ export class Player {
     }
     this.color = args?.color || 'red'
     this.solid = args?.solid || true
-    this.ctx = args?.ctx || null
-    this.requestAnimationFrame = args?.requestAnimationFrame || null
     this.health = args?.health || 250
     this.speed = 3
     this.velX = 0
