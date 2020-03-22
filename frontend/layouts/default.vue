@@ -11,9 +11,11 @@
       width: 100%
       height: 100%
       position: relative
+      background: orange
       canvas#game
         // margin: 20px
         position: absolute
+        background: white
         width: 100%
         height: 100%
         // border: 1px solid black

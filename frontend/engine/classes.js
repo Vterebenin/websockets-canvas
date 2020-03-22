@@ -43,6 +43,7 @@ export class Player {
     this.gravity = 0.3
     this.jumping = false
     this.grounded = false
+    this.moved = false
   }
 
   colCheck (block) {
@@ -64,9 +65,12 @@ export class Player {
     ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
   }
 
-  handleKeys (keys) {
+  handleKeys (keys, ctx) {
+    this.moved = false
+
     if (keys[38] || keys[32]) { // Прыжок <пробел> или <вверх>
       // up arrow
+      this.moved = true
       if (!this.jumping) {
         this.jumping = true
         this.grounded = false
@@ -74,11 +78,13 @@ export class Player {
       }
     }
     if (keys[39]) { // Кнопка <вправо>
+      this.moved = true
       if (this.velX < this.speed) {
         this.velX++
       }
     }
     if (keys[37]) { // Кнопка <влево>
+      this.moved = true
       if (this.velX > -this.speed) {
         this.velX--
       }
@@ -90,6 +96,9 @@ export class Player {
 
     this.grounded = false
 
+    // if (this.moved) {
+    //   ctx.translate(-this.velX, -this.velY)
+    // }
     this.velX *= this.friction
     this.velY += this.gravity
 
@@ -114,10 +123,11 @@ export class Updater {
 
   update () {
     const { player, blocks, keys, ctx, requestAnimationFrame, update } = this
-
-    player.handleKeys(keys)
-
     ctx.clearRect(0, 0, gameField.width, gameField.height)
+    ctx.save()
+    ctx.translate(gameField.width / 2 - player.position.x, gameField.height / 2 - player.position.y)
+
+    player.handleKeys(keys, ctx)
 
     for (const block of blocks) {
       block.drawYourself(ctx)
@@ -125,6 +135,8 @@ export class Updater {
     }
 
     player.drawYourself(ctx)
+
+    ctx.restore()
     requestAnimationFrame(update.bind(this))
   }
 }
