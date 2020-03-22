@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import { initKeys } from '@/engine/updater'
-import { Player, Block, Updater, gameField } from '@/engine/classes'
+import { initKeys } from '@/engine/helpers'
+import { Player, Block, Updater, gameField } from '@/engine/classes/index'
 
 export default {
   data () {
@@ -27,6 +27,7 @@ export default {
 
       const player = new Player({ color: 'red', ctx, requestAnimationFrame, keys })
       const blocks = []
+      console.log(Block)
       blocks.push(new Block({
         width: 300,
         height: 50,

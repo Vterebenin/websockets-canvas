@@ -1,26 +1,5 @@
-import { colCheck } from '@/engine/updater'
-
-export const gameField = {
-  width: document.documentElement.clientWidth,
-  height: document.documentElement.clientHeight
-}
-
-export class Block {
-  constructor (args) {
-    this.width = args?.width || 100
-    this.height = args?.height || 100
-    this.position = args?.position || { x: 100, y: 100 }
-    this.texture = args?.texture || ''
-    this.color = args?.color
-    this.ctx = args?.ctx || null
-    this.requestAnimationFrame = args?.requestAnimationFrame || null
-  }
-
-  drawYourself (ctx) {
-    ctx.fillStyle = this.color
-    ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
-  }
-}
+import { gameField } from '@/engine/classes/gameField'
+import { colCheck } from '@/engine/helpers'
 
 export class Player {
   constructor (args) {
@@ -110,38 +89,4 @@ export class Player {
       this.jumping = false
     }
   }
-}
-
-export class Updater {
-  constructor (args) {
-    this.player = args?.player
-    this.blocks = args?.blocks || []
-    this.keys = args?.keys || {}
-    this.ctx = args?.ctx
-    this.requestAnimationFrame = args?.requestAnimationFrame
-  }
-
-  update () {
-    const { player, blocks, keys, ctx, requestAnimationFrame, update } = this
-    ctx.clearRect(0, 0, gameField.width, gameField.height)
-    ctx.save()
-    ctx.translate(gameField.width / 2 - player.position.x, gameField.height / 2 - player.position.y)
-
-    player.handleKeys(keys, ctx)
-
-    for (const block of blocks) {
-      block.drawYourself(ctx)
-      player.colCheck(block)
-    }
-
-    player.drawYourself(ctx)
-
-    ctx.restore()
-    requestAnimationFrame(update.bind(this))
-  }
-}
-
-export const classes = {
-  Block,
-  Player
 }
