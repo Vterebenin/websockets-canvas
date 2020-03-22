@@ -1,3 +1,5 @@
+import { colCheck } from '@/engine/updater'
+
 export const gameField = {
   width: document.documentElement.clientWidth,
   height: document.documentElement.clientHeight
@@ -14,15 +16,7 @@ export class Block {
     this.requestAnimationFrame = args?.requestAnimationFrame || null
   }
 
-  update () {
-    const { ctx, color, width, height, update } = this
-    ctx.clearRect(0, 0, gameField.width, gameField.height)
-    ctx.fillStyle = color
-    ctx.fillRect(this.position.x, this.position.y, width, height)
-    requestAnimationFrame(update.bind(this))
-  }
-
-  draw (ctx) {
+  drawYourself (ctx) {
     ctx.fillStyle = this.color
     ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
   }
@@ -48,6 +42,64 @@ export class Player {
     this.friction = 0.8
     this.gravity = 0.3
     this.jumping = false
+    this.grounded = false
+  }
+
+  colCheck (block) {
+    // Функция проверки колижена игрока и блока
+    const dir = colCheck(this, block)
+    if (dir === 'l' || dir === 'r') {
+      this.velX = 0
+      this.jumping = false
+    } else if (dir === 'b') {
+      this.grounded = true
+      this.jumping = false
+    } else if (dir === 't') {
+      this.velY *= -1
+    }
+  }
+
+  drawYourself (ctx) {
+    ctx.fillStyle = this.color
+    ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+  }
+
+  handleKeys (keys) {
+    if (keys[38] || keys[32]) { // Прыжок <пробел> или <вверх>
+      // up arrow
+      if (!this.jumping) {
+        this.jumping = true
+        this.grounded = false
+        this.velY = -this.speed * 2
+      }
+    }
+    if (keys[39]) { // Кнопка <вправо>
+      if (this.velX < this.speed) {
+        this.velX++
+      }
+    }
+    if (keys[37]) { // Кнопка <влево>
+      if (this.velX > -this.speed) {
+        this.velX--
+      }
+    }
+
+    if (this.grounded) {
+      this.velY = 0
+    }
+
+    this.grounded = false
+
+    this.velX *= this.friction
+    this.velY += this.gravity
+
+    this.position.x += this.velX
+    this.position.y += this.velY
+
+    if (this.position.y >= gameField.height - this.height) {
+      this.position.y = gameField.height - this.height
+      this.jumping = false
+    }
   }
 }
 
@@ -63,50 +115,16 @@ export class Updater {
   update () {
     const { player, blocks, keys, ctx, requestAnimationFrame, update } = this
 
-    if (keys[38] || keys[32]) {
-      // up arrow
-      if (!player.jumping) {
-        player.jumping = true
-        player.velY = -player.speed * 2
-      }
-    }
-    if (keys[39]) {
-      if (player.velX < player.speed) {
-        player.velX++
-      }
-    }
-    if (keys[37]) {
-      if (player.velX > -player.speed) {
-        player.velX--
-      }
-    }
+    player.handleKeys(keys)
 
     ctx.clearRect(0, 0, gameField.width, gameField.height)
 
     for (const block of blocks) {
-      block.draw(ctx)
+      block.drawYourself(ctx)
+      player.colCheck(block)
     }
 
-    // Player
-    // TODO: Вынести в функции плеера?
-    player.velX *= player.friction
-    player.velY += player.gravity
-
-    player.position.x += player.velX
-    player.position.y += player.velY
-
-    if (player.position.x >= gameField.width - player.width) {
-      player.position.x = gameField.width - player.width
-    } else if (player.position.x <= 0) {
-      player.position.x = 0
-    }
-    if (player.position.y >= gameField.height - player.height) {
-      player.position.y = gameField.height - player.height
-      player.jumping = false
-    }
-
-    ctx.fillStyle = player.color
-    ctx.fillRect(player.position.x, player.position.y, player.width, player.height)
+    player.drawYourself(ctx)
     requestAnimationFrame(update.bind(this))
   }
 }

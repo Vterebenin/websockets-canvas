@@ -26,8 +26,21 @@ export default {
       initKeys(keys)
 
       const player = new Player({ color: 'red', ctx, requestAnimationFrame, keys })
-      const block = new Block({ color: 'blue', ctx, requestAnimationFrame })
-      const blocks = [block]
+      const blocks = []
+      blocks.push(new Block({
+        width: 300,
+        height: 400,
+        position: {
+          x: 400,
+          y: gameField.height - 400
+        },
+        color: 'pink',
+        ctx,
+        requestAnimationFrame
+      }))
+      blocks.push(new Block({ width: 200, position: { x: 150, y: 200 }, color: 'red', ctx, requestAnimationFrame }))
+      blocks.push(new Block({ width: 500, position: { x: 200, y: 300 }, color: 'green', ctx, requestAnimationFrame }))
+      blocks.push(new Block({ width: 500, position: { x: 200, y: 300 }, color: 'black', ctx, requestAnimationFrame }))
       const updater = new Updater({ player, blocks, keys, ctx, requestAnimationFrame })
       window.addEventListener('load', () => {
         updater.update()
