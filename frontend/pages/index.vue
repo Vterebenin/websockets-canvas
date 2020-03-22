@@ -29,10 +29,10 @@ export default {
       const blocks = []
       blocks.push(new Block({
         width: 300,
-        height: 400,
+        height: 50,
         position: {
           x: 400,
-          y: gameField.height - 400
+          y: gameField.height - 50
         },
         color: 'pink',
         ctx,

@@ -50,7 +50,7 @@ export class Player {
     const dir = colCheck(this, block)
     if (dir === 'l' || dir === 'r') {
       this.velX = 0
-      this.jumping = false
+      // this.jumping = false
     } else if (dir === 'b') {
       this.grounded = true
       this.jumping = false
