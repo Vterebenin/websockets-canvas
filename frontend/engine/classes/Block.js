@@ -7,7 +7,7 @@ export class Block {
     this.color = args?.color
   }
 
-  drawYourself (ctx) {
+  drawYourself (ctx, socket) {
     ctx.fillStyle = this.color
     ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
   }

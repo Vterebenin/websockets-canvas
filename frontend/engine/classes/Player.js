@@ -42,7 +42,7 @@ export class Player {
     ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
   }
 
-  handleKeys (keys, ctx) {
+  handleKeys (keys) {
     this.moved = false
 
     if (keys[38] || keys[32]) { // Прыжок <пробел> или <вверх>
@@ -86,5 +86,6 @@ export class Player {
       this.position.y = gameField.height - this.height
       this.jumping = false
     }
+    return this
   }
 }

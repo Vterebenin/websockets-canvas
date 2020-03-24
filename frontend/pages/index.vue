@@ -11,13 +11,14 @@ export default {
   data () {
     return {
       keys: {},
-      socket: {}
+      socket: null,
+      player: null
     }
   },
   created () {
     this.socket = io('http://localhost:8000')
   },
-  mounted () {
+  async mounted () {
     const canvas = this.$refs.game
     if (canvas.getContext) {
       const { keys, socket } = this
@@ -30,9 +31,7 @@ export default {
       canvas.height = gameField.height
       initKeys(keys)
 
-      const player = new Player({ color: 'red', keys })
       const blocks = []
-      console.log(Block)
       blocks.push(new Block({
         width: 300,
         height: 50,
@@ -45,10 +44,44 @@ export default {
       blocks.push(new Block({ width: 200, position: { x: 150, y: 200 }, color: 'red' }))
       blocks.push(new Block({ width: 500, position: { x: 200, y: 300 }, color: 'green' }))
       blocks.push(new Block({ width: 500, position: { x: 200, y: 300 }, color: 'black' }))
-      const updater = new Updater({ player, blocks, keys, ctx, requestAnimationFrame, socket })
-      window.addEventListener('load', () => {
+      const updater = new Updater({ blocks, keys, ctx, requestAnimationFrame, socket })
+      await socket.on('currentPlayers', (players) => {
+        console.log(players)
+        Object.keys(players).forEach((id) => {
+          if (id === socket.id) {
+            this.player = new Player({ color: 'red', keys })
+            updater.player = this.player
+          } else {
+            blocks.push(new Block({
+              width: 300,
+              height: 50,
+              position: {
+                x: 800,
+                y: gameField.height - 50
+              },
+              color: 'black'
+            }))
+          }
+        })
+      })
+      socket.on('newPlayer', (playerInfo) => {
+        console.log(playerInfo, '123qwe')
+        blocks.push(new Block({
+          width: 300,
+          height: 50,
+          position: {
+            x: 800,
+            y: gameField.height - 50
+          },
+          color: 'black'
+        }))
+      })
+      socket.on('update', () => {
         updater.update()
       })
+      // setInterval(() => {
+      //   updater.update()
+      // }, 1000 / 60)
     } else {
       // whatever
     }

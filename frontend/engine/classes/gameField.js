@@ -1,4 +1,4 @@
 export const gameField = {
-  width: document.documentElement.clientWidth,
-  height: document.documentElement.clientHeight
+  width: 1920,
+  height: 1080
 }
