@@ -29,7 +29,11 @@ export class Updater {
     for (const [_id, _player] of Object.entries(playersData)) {
       const curPlayer = this.players.find(el => el.id === _id)
       for (const [prop, value] of Object.entries(_player)) {
-        curPlayer[prop] = value
+        if (prop === 'position') {
+          curPlayer.pos = value
+        } else {
+          curPlayer[prop] = value
+        }
       }
     }
     for (const block of blocks) {
@@ -50,6 +54,7 @@ export class Updater {
 
   init () {
     this.socket.on('update', (playersData) => {
+      this.socket.emit('keyPressed', this.keys, this.socket.id)
       this.update(playersData)
     })
   }

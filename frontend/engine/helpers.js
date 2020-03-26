@@ -1,12 +1,10 @@
-export const initKeys = (keys, socket) => {
+export const initKeys = (keys) => {
   document.body.addEventListener('keydown', (e) => {
     keys[e.keyCode] = true
-    socket.emit('keyPressed', keys, socket.id)
   })
 
   document.body.addEventListener('keyup', (e) => {
     keys[e.keyCode] = false
-    socket.emit('keyPressed', keys, socket.id)
   })
 }
 

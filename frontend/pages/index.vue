@@ -27,7 +27,8 @@ export default {
       this.updater.ctx = canvas.getContext('2d')
       canvas.width = gameField.width
       canvas.height = gameField.height
-      initKeys(this.keys, this.socket)
+      initKeys(this.keys)
+      this.updater.keys = this.keys
       this.socket.on('currentPlayers', (players, id) => {
         for (const [_id, _player] of Object.entries(players)) {
           if (_id === id) {

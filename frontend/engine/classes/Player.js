@@ -27,6 +27,18 @@ export class Player {
     this.prevPosition = {}
   }
 
+  interpolate (start, stop, amt) {
+    return amt * (stop - start) + start
+  }
+
+  set pos (obj) {
+    const { x, y } = obj
+    // this.position.x = this.interpolate(this.position.x, x, 0.05)
+    // this.position.y = this.interpolate(this.position.y, y, 0.05)
+    this.position.x = x
+    this.position.y = y
+  }
+
   colCheck (block) {
     // Функция проверки колижена игрока и блока
     const dir = colCheck(this, block)

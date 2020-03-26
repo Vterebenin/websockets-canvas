@@ -11,11 +11,11 @@ class Player {
     }
     this.width = props.width || 20
     this.height = props.height || 20
-    this.speed = 8
+    this.speed = 3
     this.velX = 0
     this.velY = 0
-    this.friction = 0.5
-    this.gravity = 0.5
+    this.friction = 0.7
+    this.gravity = 0.2
     this.jumping = false
     this.grounded = false
     this.moved = false
@@ -40,13 +40,13 @@ class Player {
     if (keys[39]) { // Кнопка <вправо>
       this.moved = true
       if (this.velX < this.speed) {
-        this.velX += 40
+        this.velX++
       }
     }
     if (keys[37]) { // Кнопка <влево>
       this.moved = true
       if (this.velX > -this.speed) {
-        this.velX -= 40
+        this.velX--
       }
     }
     return this
@@ -62,12 +62,12 @@ class Player {
     this.velX *= this.friction
     this.velY += this.gravity
 
-    // this.position.x += this.velX
-    // this.position.y += this.velY
-    const curX = this.position.x
-    const curY = this.position.y
-    this.position.x = this.interpolate(curX, curX + this.velX, 0.5)
-    this.position.y = this.interpolate(curY, curY + this.velY, 0.5)
+    this.position.x += this.velX
+    this.position.y += this.velY
+    // const curX = this.position.x
+    // const curY = this.position.y
+    // this.position.x = this.interpolate(curX, curX + this.velX, 0.5)
+    // this.position.y = this.interpolate(curY, curY + this.velY, 0.5)
 
     if (this.position.y >= gameField.height - this.height) {
       this.position.y = gameField.height - this.height
