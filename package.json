@@ -10,7 +10,8 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "test": "jest"
+    "test": "jest",
+    "server": "DEBUG=express:* node frontend/sockets/app.js"
   },
   "dependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.9.0",

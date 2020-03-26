@@ -1,9 +1,0 @@
-{
-  "name": "sockets",
-  "version": "1.0.0",
-  "scripts": {
-    "run": "DEBUG=express:* node app.js"
-  },
-  "main": "app.js",
-  "license": "MIT"
-}

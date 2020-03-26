@@ -3,24 +3,33 @@ import { colCheck } from '@/engine/helpers'
 
 export class Player {
   constructor (args) {
+    this.id = args?.id || null
     this.width = args?.width || 20
     this.height = args?.height || 20
     this.position = args?.position || {
       x: gameField.width / 2,
       y: gameField.height - this.height
     }
-    this.color = args?.color || 'red'
     this.solid = args?.solid || true
     this.health = args?.health || 250
-    this.speed = 3
+    this.speed = 8
     this.velX = 0
     this.velY = 0
     this.keys = args?.keys || []
-    this.friction = 0.8
-    this.gravity = 0.3
+    this.friction = 0.5
+    this.gravity = 0.5
+    this.isEnemy = Boolean(args?.isEnemy)
+    this.color = this.isEnemy ? 'red' : 'blue'
     this.jumping = false
     this.grounded = false
     this.moved = false
+    this.socket = null
+    this.prevPosition = {}
+  }
+
+  set pos (obj) {
+    this.position = obj
+    this.socket.emit('setPosition', { id: this.socket.id, obj })
   }
 
   colCheck (block) {
@@ -57,13 +66,13 @@ export class Player {
     if (keys[39]) { // Кнопка <вправо>
       this.moved = true
       if (this.velX < this.speed) {
-        this.velX++
+        this.velX += 5
       }
     }
     if (keys[37]) { // Кнопка <влево>
       this.moved = true
       if (this.velX > -this.speed) {
-        this.velX--
+        this.velX -= 5
       }
     }
 
@@ -85,6 +94,14 @@ export class Player {
     if (this.position.y >= gameField.height - this.height) {
       this.position.y = gameField.height - this.height
       this.jumping = false
+    }
+    const newPosition = {
+      x: Math.round(this.position.x),
+      y: Math.round(this.position.y)
+    }
+    if ((this.prevPosition.x !== newPosition.x) || (this.prevPosition.y !== newPosition.y)) {
+      this.pos = newPosition
+      this.prevPosition = newPosition
     }
     return this
   }

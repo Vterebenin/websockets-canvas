@@ -1,3 +1,4 @@
+const Player = require("./engine/classes/Player")
 const Express = require("express")()
 const Http = require("http").Server(Express)
 const Socketio = require("socket.io")(Http)
@@ -9,18 +10,17 @@ Http.listen(8000, () => {
 })
 
 Socketio.on('connection', function (socket) {
-  players[socket.id] = ''
-  socket.emit('currentPlayers', players);
-  socket.broadcast.emit('newPlayer', players[socket.id])
-  console.log('user connected')
-  console.log(players)
+  const { id } = socket
+  players[id] = new Player({ id })
+
+  socket.emit('currentPlayers', players, id)
+  socket.broadcast.emit('newPlayer', players, id)
+
   setInterval(() => {
-    socket.emit('update', socket.id)
+    socket.emit('update', players)
   }, 1000 / 60)
   socket.on('disconnect', function () {
     delete players[socket.id]
-    console.log('user disconnected')
-    console.log(players)
     Socketio.emit('disconnect', socket.id)
-  });
-});
+  })
+})
