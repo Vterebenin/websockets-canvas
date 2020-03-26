@@ -11,9 +11,9 @@ export class Updater {
     this.requestAnimationFrame = args?.requestAnimationFrame
   }
 
-  update () {
+  update (playersData) {
     const {
-      // blocks,
+      blocks,
       // keys,
       ctx,
       players,
@@ -24,12 +24,19 @@ export class Updater {
     const player = players.find(el => el.id === socket.id)
     ctx.translate(gameField.width / 2 - player.position.x, gameField.height / 2 - player.position.y)
 
-    // player.handleKeys(keys, socket)
+    // player.handleKeys()
 
-    // for (const block of blocks) {
-    //   block.drawYourself(ctx)
-    //   player.colCheck(block)
-    // }
+    for (const [_id, _player] of Object.entries(playersData)) {
+      const curPlayer = this.players.find(el => el.id === _id)
+      for (const [prop, value] of Object.entries(_player)) {
+        curPlayer[prop] = value
+      }
+    }
+    for (const block of blocks) {
+      block.drawYourself(ctx)
+      player.colCheck(block)
+    }
+
     for (const _player of players) {
       if (_player.id !== socket.id) {
         _player.drawYourself(ctx)
@@ -42,8 +49,8 @@ export class Updater {
   }
 
   init () {
-    this.socket.on('update', () => {
-      this.update()
+    this.socket.on('update', (playersData) => {
+      this.update(playersData)
     })
   }
 }

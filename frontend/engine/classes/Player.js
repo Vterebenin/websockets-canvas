@@ -27,11 +27,6 @@ export class Player {
     this.prevPosition = {}
   }
 
-  set pos (obj) {
-    this.position = obj
-    this.socket.emit('setPosition', { id: this.socket.id, obj })
-  }
-
   colCheck (block) {
     // Функция проверки колижена игрока и блока
     const dir = colCheck(this, block)
@@ -53,56 +48,5 @@ export class Player {
 
   handleKeys (keys) {
     this.moved = false
-
-    if (keys[38] || keys[32]) { // Прыжок <пробел> или <вверх>
-      // up arrow
-      this.moved = true
-      if (!this.jumping) {
-        this.jumping = true
-        this.grounded = false
-        this.velY = -this.speed * 2
-      }
-    }
-    if (keys[39]) { // Кнопка <вправо>
-      this.moved = true
-      if (this.velX < this.speed) {
-        this.velX += 5
-      }
-    }
-    if (keys[37]) { // Кнопка <влево>
-      this.moved = true
-      if (this.velX > -this.speed) {
-        this.velX -= 5
-      }
-    }
-
-    if (this.grounded) {
-      this.velY = 0
-    }
-
-    this.grounded = false
-
-    // if (this.moved) {
-    //   ctx.translate(-this.velX, -this.velY)
-    // }
-    this.velX *= this.friction
-    this.velY += this.gravity
-
-    this.position.x += this.velX
-    this.position.y += this.velY
-
-    if (this.position.y >= gameField.height - this.height) {
-      this.position.y = gameField.height - this.height
-      this.jumping = false
-    }
-    const newPosition = {
-      x: Math.round(this.position.x),
-      y: Math.round(this.position.y)
-    }
-    if ((this.prevPosition.x !== newPosition.x) || (this.prevPosition.y !== newPosition.y)) {
-      this.pos = newPosition
-      this.prevPosition = newPosition
-    }
-    return this
   }
 }

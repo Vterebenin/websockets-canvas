@@ -16,7 +16,13 @@ Socketio.on('connection', function (socket) {
   socket.emit('currentPlayers', players, id)
   socket.broadcast.emit('newPlayer', players, id)
 
+  socket.on('keyPressed', (keys, id) => {
+    players[id] = players[id].handleKeys(keys)
+  })
   setInterval(() => {
+    for (const id in players) {
+      players[id].handleMovements()
+    }
     socket.emit('update', players)
   }, 1000 / 60)
   socket.on('disconnect', function () {
