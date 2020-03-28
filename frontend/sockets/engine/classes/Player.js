@@ -25,6 +25,7 @@ class Player {
     this.grounded = false
     this.moved = false
     this.socket = null
+    this.spellBook = null
   }
 
   drawYourself (ctx) {
@@ -55,7 +56,7 @@ class Player {
   handleKeys (keys) {
     this.moved = false
 
-    if (keys[38] || keys[32]) { // Прыжок <пробел> или <вверх>
+    if (keys[87] || keys[32]) { // Прыжок <пробел> или <вверх>
       // up arrow
       this.moved = true
       if (!this.jumping) {
@@ -64,17 +65,21 @@ class Player {
         this.velY = -this.speed * 2
       }
     }
-    if (keys[39]) { // Кнопка <вправо>
+    if (keys[68]) { // Кнопка <вправо>
       this.moved = true
       if (this.velX < this.speed) {
         this.velX += this.velSpeed
       }
     }
-    if (keys[37]) { // Кнопка <влево>
+    if (keys[65]) { // Кнопка <влево>
       this.moved = true
       if (this.velX > -this.speed) {
         this.velX -= this.velSpeed
       }
+    }
+
+    if (keys[76]) { // кнопка атакующей способности <L>
+      this.spellBook.castAttackSpell()
     }
     return this
   }

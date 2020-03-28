@@ -1,4 +1,4 @@
-const { Player, Map, Block } = require('./engine/classes')
+const { Player, Map, Block, SpellBook, Spell } = require('./engine/classes')
 const Express = require('express')()
 const Http = require('http').Server(Express)
 const Socketio = require('socket.io')(Http)
@@ -22,6 +22,17 @@ map.blocks.push(new Block({ width: 500, position: { x: 200, y: 300 }, color: 'bl
 Socketio.on('connection', function (socket) {
   const { id } = socket
   players[id] = new Player({ id })
+  const attackSpell = new Spell({
+    mechanic (player) {
+      console.log('casted!', player.position, id)
+    }
+  })
+  players[id].spellBook = new SpellBook({
+    attackSpell,
+    player: { ...players[id] }
+  })
+
+
   socket.emit('setMap', map)
   socket.emit('currentPlayers', players, id, map)
   socket.broadcast.emit('newPlayer', players, id)
