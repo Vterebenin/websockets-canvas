@@ -11,11 +11,11 @@ class Player {
     }
     this.width = props.width || 20
     this.height = props.height || 20
-    this.speed = 3
+    this.speed = 5
     this.velX = 0
     this.velY = 0
-    this.friction = 0.7
-    this.gravity = 0.2
+    this.friction = 0.5
+    this.gravity = 0.4
     this.jumping = false
     this.grounded = false
     this.moved = false

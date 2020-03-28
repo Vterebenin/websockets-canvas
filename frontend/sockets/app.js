@@ -20,7 +20,7 @@ Socketio.on('connection', function (socket) {
     players[id] = players[id].handleKeys(keys)
   })
   setInterval(() => {
-    for (const id in players) {
+    if (players[id]) {
       players[id].handleMovements()
     }
     socket.emit('update', players)
