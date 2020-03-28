@@ -1,4 +1,4 @@
-const { Player, Map, Block, gameField } = require('./engine/classes')
+const { Player, Map, Block } = require('./engine/classes')
 const Express = require('express')()
 const Http = require('http').Server(Express)
 const Socketio = require('socket.io')(Http)
@@ -33,7 +33,9 @@ Socketio.on('connection', function (socket) {
     if (players[id]) {
       players[id].handleMovements()
       for (const block of map.blocks) {
-        players[id].colCheck(block)
+        if (block.solid) {
+          players[id].colCheck(block)
+        }
       }
     }
     socket.emit('update', players)

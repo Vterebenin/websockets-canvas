@@ -1,6 +1,5 @@
 'use strict'
 const gameField = require('./gameField')
-const Block = require('./Block')
 
 class Updater {
   constructor (props) {
@@ -12,19 +11,12 @@ class Updater {
     this.socket = null
   }
 
-  update (playersData) {
-    const {
-      // keys,
-      map,
-      ctx,
-      players,
-      socket
-    } = this
-    ctx.clearRect(0, 0, gameField.width, gameField.height)
-    ctx.save()
-    const player = players.find(el => el.id === socket.id)
-    ctx.translate(gameField.width / 2 - player.position.x, gameField.height / 2 - player.position.y)
+  draw (entity) {
+    this.ctx.fillStyle = entity.color
+    this.ctx.fillRect(entity.position.x, entity.position.y, entity.width, entity.height)
+  }
 
+  updatePlayersData (playersData) {
     for (const [_id, _player] of Object.entries(playersData)) {
       const curPlayer = this.players.find(el => el.id === _id)
       for (const [prop, value] of Object.entries(_player)) {
@@ -35,20 +27,40 @@ class Updater {
         }
       }
     }
-    for (const mapBlock of map.blocks) {
-      const block = new Block({ ...mapBlock })
-      block.drawYourself(ctx)
+  }
+
+  streamDrawing () {
+    for (const block of this.map.blocks) {
+      this.draw(block)
     }
 
-    for (const _player of players) {
-      if (_player.id !== socket.id) {
-        _player.drawYourself(ctx)
-      } else {
-        player.drawYourself(ctx)
-      }
+    for (const player of this.players) {
+      this.draw(player)
     }
+  }
 
-    ctx.restore()
+  initCamera () {
+    const { ctx, players, socket } = this
+    const player = players.find(el => el.id === socket.id)
+    ctx.translate(gameField.width / 2 - player.position.x, gameField.height / 2 - player.position.y)
+  }
+
+  streamStart () {
+    const { ctx } = this
+    ctx.clearRect(0, 0, gameField.width, gameField.height)
+    ctx.save()
+  }
+
+  streamEnd () {
+    this.ctx.restore()
+  }
+
+  update (playersData) {
+    this.streamStart()
+    this.initCamera()
+    this.updatePlayersData(playersData)
+    this.streamDrawing()
+    this.streamEnd()
   }
 
   init () {

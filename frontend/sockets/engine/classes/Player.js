@@ -5,18 +5,18 @@ const gameField = require('./gameField')
 class Player {
   constructor (props) {
     this.id = props.id || null
-    this.width = props.width || 20
-    this.height = props.height || 20
+    this.width = props.width || 50
+    this.height = props.height || 100
     this.position = props.position || {
       x: Math.floor(Math.random() * 500),
       y: 100
     }
     this.solid = props.solid || true
     this.health = props.health || 250
-    this.speed = 5
+    this.speed = 6
     this.velX = 0
     this.velY = 0
-    this.velSpeed = 10
+    this.velSpeed = 15
     this.friction = 0.2
     this.isEnemy = Boolean(props.isEnemy)
     this.color = this.isEnemy ? 'red' : 'blue'
@@ -48,8 +48,6 @@ class Player {
 
   set pos (obj) {
     const { x, y } = obj
-    // this.position.x = this.interpolate(this.position.x, x, 0.05)
-    // this.position.y = this.interpolate(this.position.y, y, 0.05)
     this.position.x = x
     this.position.y = y
   }

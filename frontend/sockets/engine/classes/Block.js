@@ -6,6 +6,7 @@ class Block {
     this.height = props.height || 100
     this.position = props.position || { x: 100, y: 100 }
     this.texture = props.texture || ''
+    this.solid = props.solid || true
     this.color = props.color
   }
 
