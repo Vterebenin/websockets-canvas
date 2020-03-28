@@ -16,10 +16,11 @@ class Player {
     this.speed = 5
     this.velX = 0
     this.velY = 0
-    this.friction = 0.5
+    this.velSpeed = 10
+    this.friction = 0.2
     this.isEnemy = Boolean(props.isEnemy)
     this.color = this.isEnemy ? 'red' : 'blue'
-    this.gravity = 0.4
+    this.gravity = 0.6
     this.jumping = false
     this.grounded = false
     this.moved = false
@@ -68,13 +69,13 @@ class Player {
     if (keys[39]) { // Кнопка <вправо>
       this.moved = true
       if (this.velX < this.speed) {
-        this.velX++
+        this.velX += this.velSpeed
       }
     }
     if (keys[37]) { // Кнопка <влево>
       this.moved = true
       if (this.velX > -this.speed) {
-        this.velX--
+        this.velX -= this.velSpeed
       }
     }
     return this

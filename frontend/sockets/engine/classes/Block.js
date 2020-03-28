@@ -1,12 +1,12 @@
 'use strict'
 
 class Block {
-  constructor (args) {
-    this.width = args?.width || 100
-    this.height = args?.height || 100
-    this.position = args?.position || { x: 100, y: 100 }
-    this.texture = args?.texture || ''
-    this.color = args?.color
+  constructor (props) {
+    this.width = props.width || 100
+    this.height = props.height || 100
+    this.position = props.position || { x: 100, y: 100 }
+    this.texture = props.texture || ''
+    this.color = props.color
   }
 
   drawYourself (ctx, socket) {

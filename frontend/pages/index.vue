@@ -5,7 +5,7 @@
 <script>
 import io from 'socket.io-client'
 import { initKeys } from '@/sockets/helpers'
-import { Updater, gameField, Player, Block } from '@/sockets/engine/classes'
+import { Updater, gameField, Player } from '@/sockets/engine/classes'
 
 export default {
   data () {
@@ -28,6 +28,9 @@ export default {
       canvas.height = gameField.height
       initKeys(this.keys)
       this.updater.keys = this.keys
+      this.socket.on('setMap', (map) => {
+        this.updater.map = map
+      })
       this.socket.on('currentPlayers', (players, id) => {
         for (const [_id, _player] of Object.entries(players)) {
           if (_id === id) {
@@ -42,20 +45,6 @@ export default {
         this.clientPlayers.push(new Player({ ...players[id], isEnemy: true }))
         this.updater.players = this.clientPlayers
       })
-      const blocks = []
-      blocks.push(new Block({
-        width: 300,
-        height: 50,
-        position: {
-          x: 400,
-          y: gameField.height - 50
-        },
-        color: 'pink'
-      }))
-      blocks.push(new Block({ width: 200, position: { x: 150, y: 200 }, color: 'red' }))
-      blocks.push(new Block({ width: 500, position: { x: 200, y: 300 }, color: 'green' }))
-      blocks.push(new Block({ width: 500, position: { x: 200, y: 300 }, color: 'black' }))
-      this.updater.blocks = blocks
       this.updater.init()
     }
   }

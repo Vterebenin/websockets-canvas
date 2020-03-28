@@ -1,19 +1,29 @@
-const Player = require("./engine/classes/Player")
-const Express = require("express")()
-const Http = require("http").Server(Express)
-const Socketio = require("socket.io")(Http)
+const { Player, Map, Block, gameField } = require('./engine/classes')
+const Express = require('express')()
+const Http = require('http').Server(Express)
+const Socketio = require('socket.io')(Http)
 
 let players = {}
 
 Http.listen(8000, () => {
-    console.log("Listening at :8000...")
+    console.log('Listening at :8000...')
 })
+const map = new Map({ name: 'Blind forest' })
+map.blocks.push(new Block({
+  width: 300,
+  height: 50,
+  position: { x: 400, y: map.gameField.height - 50 },
+  color: 'pink'
+}))
+map.blocks.push(new Block({ width: 200, position: { x: 150, y: map.gameField.height - 100 }, color: 'red' }))
+map.blocks.push(new Block({ width: 500, position: { x: 200, y: 300 }, color: 'green' }))
+map.blocks.push(new Block({ width: 500, position: { x: 200, y: 300 }, color: 'black' }))
 
 Socketio.on('connection', function (socket) {
   const { id } = socket
   players[id] = new Player({ id })
-
-  socket.emit('currentPlayers', players, id)
+  socket.emit('setMap', map)
+  socket.emit('currentPlayers', players, id, map)
   socket.broadcast.emit('newPlayer', players, id)
 
   socket.on('keyPressed', (keys, id) => {
@@ -22,6 +32,9 @@ Socketio.on('connection', function (socket) {
   setInterval(() => {
     if (players[id]) {
       players[id].handleMovements()
+      for (const block of map.blocks) {
+        players[id].colCheck(block)
+      }
     }
     socket.emit('update', players)
   }, 1000 / 60)
