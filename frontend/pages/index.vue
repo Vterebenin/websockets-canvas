@@ -4,9 +4,8 @@
 
 <script>
 import io from 'socket.io-client'
-import { initKeys } from '@/engine/helpers'
-import { gameField } from '@/engine/classes/gameField'
-import { Updater, Player, Block } from '@/engine/classes'
+import { initKeys } from '@/sockets/helpers'
+import { Updater, gameField, Player, Block } from '@/sockets/engine/classes'
 
 export default {
   data () {

@@ -1,4 +1,4 @@
-export const initKeys = (keys) => {
+const initKeys = (keys) => {
   document.body.addEventListener('keydown', (e) => {
     keys[e.keyCode] = true
   })
@@ -8,7 +8,11 @@ export const initKeys = (keys) => {
   })
 }
 
-export const colCheck = (shapeA, shapeB) => {
+const interpolate = (start, stop, amt) => {
+  return amt * (stop - start) + start
+}
+
+const colCheck = (shapeA, shapeB) => {
   const vX = (shapeA.position.x + (shapeA.width / 2)) - (shapeB.position.x + (shapeB.width / 2))
   const vY = (shapeA.position.y + (shapeA.height / 2)) - (shapeB.position.y + (shapeB.height / 2))
   // add the half widths and half heights of the objects
@@ -40,4 +44,10 @@ export const colCheck = (shapeA, shapeB) => {
     }
   }
   return colDir
+}
+
+module.exports = {
+  initKeys,
+  interpolate,
+  colCheck
 }

@@ -1,28 +1,56 @@
-"use strict"
-
+'use strict'
+const { colCheck } = require('../../helpers')
 const gameField = require('./gameField')
 
 class Player {
-  constructor(props) {
+  constructor (props) {
     this.id = props.id || null
+    this.width = props.width || 20
+    this.height = props.height || 20
     this.position = props.position || {
       x: Math.floor(Math.random() * 500),
       y: 100
     }
-    this.width = props.width || 20
-    this.height = props.height || 20
+    this.solid = props.solid || true
+    this.health = props.health || 250
     this.speed = 5
     this.velX = 0
     this.velY = 0
     this.friction = 0.5
+    this.isEnemy = Boolean(props.isEnemy)
+    this.color = this.isEnemy ? 'red' : 'blue'
     this.gravity = 0.4
     this.jumping = false
     this.grounded = false
     this.moved = false
+    this.socket = null
   }
 
-  interpolate (start, stop, amt) {
-    return amt * (stop - start) + start
+  drawYourself (ctx) {
+    ctx.fillStyle = this.color
+    ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
+  }
+
+  colCheck (block) {
+    // Функция проверки колижена игрока и блока
+    const dir = colCheck(this, block)
+    if (dir === 'l' || dir === 'r') {
+      this.velX = 0
+      // this.jumping = false
+    } else if (dir === 'b') {
+      this.grounded = true
+      this.jumping = false
+    } else if (dir === 't') {
+      this.velY *= -1
+    }
+  }
+
+  set pos (obj) {
+    const { x, y } = obj
+    // this.position.x = this.interpolate(this.position.x, x, 0.05)
+    // this.position.y = this.interpolate(this.position.y, y, 0.05)
+    this.position.x = x
+    this.position.y = y
   }
 
   handleKeys (keys) {

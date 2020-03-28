@@ -1,4 +1,6 @@
-export class Block {
+'use strict'
+
+class Block {
   constructor (args) {
     this.width = args?.width || 100
     this.height = args?.height || 100
@@ -12,3 +14,5 @@ export class Block {
     ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
   }
 }
+
+module.exports = Block

@@ -1,6 +1,7 @@
-import { gameField } from '@/engine/classes/gameField'
+'use strict'
+const gameField = require('./gameField')
 
-export class Updater {
+class Updater {
   constructor (args) {
     this.players = args?.players || []
     this.blocks = args?.blocks || []
@@ -31,7 +32,7 @@ export class Updater {
       for (const [prop, value] of Object.entries(_player)) {
         if (prop === 'position') {
           curPlayer.pos = value
-        } else {
+        } else if (!['isEnemy', 'color'].includes(prop)) {
           curPlayer[prop] = value
         }
       }
@@ -59,3 +60,5 @@ export class Updater {
     })
   }
 }
+
+module.exports = Updater

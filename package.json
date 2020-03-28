@@ -11,7 +11,7 @@
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "test": "jest",
-    "server": "DEBUG=express:* node frontend/sockets/app.js"
+    "server": "DEBUG=express:* node --experimental-modules frontend/sockets/app.js"
   },
   "dependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.9.0",
