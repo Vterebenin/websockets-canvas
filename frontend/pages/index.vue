@@ -3,9 +3,10 @@
 </template>
 
 <script>
-import io from 'socket.io-client'
-import { initKeys } from '@/sockets/helpers'
-import { Updater, Player } from '@/sockets/engine/classes'
+// import io from 'socket.io-client'
+import ph from 'phaser'
+// import { initKeys } from '@/sockets/helpers'
+import { Updater, Player, Map } from '@/sockets/engine/classes'
 
 export default {
   data () {
@@ -13,35 +14,75 @@ export default {
       socket: null,
       clientPlayers: [],
       keys: {},
+      map: new Map('Blind forest'),
       updater: new Updater()
     }
   },
   created () {
-    this.socket = io('http://localhost:8000')
-    this.updater.socket = this.socket
+    // this.socket = io('http://localhost:8000')
+    // this.updater.socket = this.socket
   },
   mounted () {
-    const canvas = this.$refs.game
-    if (canvas.getContext) {
-      this.updater.ctx = canvas.getContext('2d')
-
-      initKeys(this.keys)
-      this.updater.keys = this.keys
-
-      this.socket.on('setMap', (map) => {
-        this.handleSetMap(canvas, map)
-      })
-      this.socket.on('currentPlayers', (players, id) => {
-        this.handleCurrentPlayers(players, id)
-      })
-      this.socket.on('newPlayer', (players, id) => {
-        this.handleNewPlayers(players, id)
-      })
-      this.socket.on('disconnect', (id) => {
-        this.handleDisconnect(id)
-      })
-      this.updater.init()
+    const { map: { gameField } } = this
+    const canvas = document.getElementById('game')
+    const config = {
+      type: ph,
+      width: gameField.width,
+      height: gameField.height,
+      canvas,
+      physics: {
+        default: 'arcade',
+        arcade: {
+          gravity: { y: 300 },
+          debug: false
+        }
+      },
+      scene: {
+        preload,
+        create,
+        update: this.update
+      }
     }
+    const game = new ph.Game(config)
+
+    function preload () {
+      this.load.image('background', '/assets/swamplands/2 Background/Background.png')
+      this.load.image('tileset', '/assets/swamplands/1 Tiles/Tileset.png')
+      // this.load.image('ground', 'src/games/firstgame/assets/platform.png')
+      // this.load.image('star', 'src/games/firstgame/assets/star.png')
+      // this.load.image('bomb', 'src/games/firstgame/assets/bomb.png')
+      // this.load.spritesheet('dude', 'src/games/firstgame/assets/dude.png', { frameWidth: 32, frameHeight: 48 })
+    }
+
+    function create () {
+      const bg = this.add.image(gameField.width / 2, gameField.height / 2, 'background')
+      bg.displayWidth = gameField.width
+      bg.displayHeight = gameField.height
+    }
+
+    console.log(game)
+
+    // const canvas = this.$refs.game
+    // if (canvas.getContext) {
+    //   this.updater.ctx = canvas.getContext('2d')
+    //
+    //   initKeys(this.keys)
+    //   this.updater.keys = this.keys
+    //
+    //   this.socket.on('setMap', (map) => {
+    //     this.handleSetMap(canvas, map)
+    //   })
+    //   this.socket.on('currentPlayers', (players, id) => {
+    //     this.handleCurrentPlayers(players, id)
+    //   })
+    //   this.socket.on('newPlayer', (players, id) => {
+    //     this.handleNewPlayers(players, id)
+    //   })
+    //   this.socket.on('disconnect', (id) => {
+    //     this.handleDisconnect(id)
+    //   })
+    //   this.updater.init()
+    // }
   },
   methods: {
     handleCurrentPlayers (players, id) {
@@ -66,6 +107,10 @@ export default {
       canvas.width = map.gameField.width
       canvas.height = map.gameField.height
       this.updater.map = map
+    },
+    create () {
+    },
+    update () {
     }
   }
 }
