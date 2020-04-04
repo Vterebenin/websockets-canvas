@@ -47,7 +47,9 @@ export default {
 
     function preload () {
       this.load.image('background', '/assets/swamplands/2 Background/Background.png')
-      this.load.image('tileset', '/assets/swamplands/1 Tiles/Tileset.png')
+      this.load.tilemapTiledJSON('map', '/tileMaps/json/testmap.json')
+      this.load.image('Tileset', '/assets/swamplands/1 Tiles/Tileset.png')
+      this.load.image('player', '/assets/characters/2 GraveRobber/GraveRobber.png')
       // this.load.image('ground', 'src/games/firstgame/assets/platform.png')
       // this.load.image('star', 'src/games/firstgame/assets/star.png')
       // this.load.image('bomb', 'src/games/firstgame/assets/bomb.png')
@@ -55,9 +57,21 @@ export default {
     }
 
     function create () {
-      const bg = this.add.image(gameField.width / 2, gameField.height / 2, 'background')
-      bg.displayWidth = gameField.width
-      bg.displayHeight = gameField.height
+      // const bg = this.add.image(gameField.width / 2, gameField.height / 2, 'background')
+      // const player = this.add.image(gameField.width / 2, gameField.height / 2, 'player')
+      // bg.displayWidth = gameField.width
+      // bg.displayHeight = gameField.height
+
+      this.map = this.add.tilemap('map')
+
+      const TileSet = this.map.addTilesetImage('Tileset', 'Tileset')
+
+      this.backgroundLayer = this.map.createStaticLayer('Слой тайлов 1', TileSet)
+      this.player = this.physics.add.sprite(gameField.width / 2, gameField.height / 2, 'player')
+      this.backgroundLayer.setCollisionBetween(1, 50)
+      this.physics.add.collider(this.player, this.backgroundLayer)
+      this.cursors = this.input.keyboard.createCursorKeys()
+      console.log(this.cursors)
     }
 
     console.log(game)
