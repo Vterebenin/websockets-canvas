@@ -40,7 +40,7 @@ export default {
       scene: {
         preload,
         create,
-        update: this.update
+        update
       }
     }
     const game = new ph.Game(config)
@@ -57,10 +57,9 @@ export default {
     }
 
     function create () {
-      // const bg = this.add.image(gameField.width / 2, gameField.height / 2, 'background')
-      // const player = this.add.image(gameField.width / 2, gameField.height / 2, 'player')
-      // bg.displayWidth = gameField.width
-      // bg.displayHeight = gameField.height
+      const bg = this.add.image(gameField.width / 2, gameField.height / 2, 'background')
+      bg.displayWidth = gameField.width
+      bg.displayHeight = gameField.height
 
       this.map = this.add.tilemap('map')
 
@@ -70,8 +69,26 @@ export default {
       this.player = this.physics.add.sprite(gameField.width / 2, gameField.height / 2, 'player')
       this.backgroundLayer.setCollisionBetween(1, 50)
       this.physics.add.collider(this.player, this.backgroundLayer)
-      this.cursors = this.input.keyboard.createCursorKeys()
-      console.log(this.cursors)
+      this.wasd = {
+        up: this.input.keyboard.addKey(ph.Input.Keyboard.KeyCodes.W),
+        down: this.input.keyboard.addKey(ph.Input.Keyboard.KeyCodes.S),
+        left: this.input.keyboard.addKey(ph.Input.Keyboard.KeyCodes.A),
+        right: this.input.keyboard.addKey(ph.Input.Keyboard.KeyCodes.D)
+      }
+      console.log(this.wasd)
+    }
+
+    function update () {
+      if (this.wasd.left.isDown) {
+        this.player.setVelocityX(-160)
+      } else if (this.wasd.right.isDown) {
+        this.player.setVelocityX(160)
+      } else {
+        this.player.setVelocityX(0)
+      }
+      if (this.wasd.up.isDown && this.player.body.blocked.down) {
+        this.player.setVelocityY(-330)
+      }
     }
 
     console.log(game)
