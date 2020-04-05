@@ -1,13 +1,13 @@
-const Player = require('./Player')
-const Updater = require('./Updater')
-const Block = require('./Block')
-const gameField = require('./gameField')
-const Map = require('./Map')
-const Projectile = require('./Projectile')
-const Spell = require('./Spell')
-const SpellBook = require('./SpellBook')
+import Updater from './Updater'
+import Player from './Player'
+import Block from './Block'
+import gameField from './gameField'
+import Map from './Map'
+import Projectile from './Projectile'
+import Spell from './Spell'
+import SpellBook from './SpellBook'
 
-module.exports = {
+export default {
   Player,
   Updater,
   Block,

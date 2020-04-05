@@ -18,7 +18,8 @@ const colCheck = (shapeA, shapeB) => {
   // add the half widths and half heights of the objects
   const hWidths = (shapeA.width / 2) + (shapeB.width / 2)
   const hHeights = (shapeA.height / 2) + (shapeB.height / 2)
-  let colDir
+  const colEntity1 = { onLeft: false, onRight: false, onBottom: false, onTop: false }
+  const colEntity2 = { onLeft: false, onRight: false, onBottom: false, onTop: false }
 
   // if the position.x and position.y vector are less
   // than the half width or half height, they we must be
@@ -29,21 +30,21 @@ const colCheck = (shapeA, shapeB) => {
     const oY = hHeights - Math.abs(vY)
     if (oX >= oY) {
       if (vY > 0) {
-        colDir = 't'
+        colEntity1.onTop = true
         shapeA.position.y += oY
       } else {
-        colDir = 'b'
+        colEntity1.onBottom = true
         shapeA.position.y -= oY
       }
     } else if (vX > 0) {
-      colDir = 'l'
+      colEntity1.onLeft = true
       shapeA.position.x += oX
     } else {
-      colDir = 'r'
+      colEntity1.onRight = true
       shapeA.position.x -= oX
     }
   }
-  return colDir
+  return [colEntity1, colEntity2]
 }
 
 module.exports = {

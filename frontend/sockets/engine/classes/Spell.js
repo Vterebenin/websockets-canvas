@@ -1,4 +1,4 @@
-module.exports = class Spell {
+export default class Spell {
   constructor (props) {
     this.coolDownTime = 5000
     this.isAvailable = true

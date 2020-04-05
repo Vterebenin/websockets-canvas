@@ -1,5 +1,4 @@
-'use strict'
-module.exports = class Map {
+export default class Map {
   constructor (props) {
     this.blocks = []
     this.name = props.name
@@ -7,5 +6,6 @@ module.exports = class Map {
       width: 1920,
       height: 1080
     }
+    this.tilemap = props.tilemap
   }
 }

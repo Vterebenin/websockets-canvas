@@ -1,4 +1,4 @@
-module.exports = class SpellBook {
+export default class SpellBook {
   constructor (props) {
     this.attackSpell = props.attackSpell
     this.player = props.player

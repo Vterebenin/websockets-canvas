@@ -1,4 +1,4 @@
-module.exports = class Projectile {
+export default class Projectile {
   constructor (props) {
     // this.speed = 5
     // this.direction = 90

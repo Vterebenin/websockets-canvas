@@ -1,9 +1,9 @@
-'use strict'
-const gameField = require('./gameField')
+import gameField from './gameField'
+import { colCheck } from '@/sockets/helpers'
 
-class Updater {
-  constructor (props) {
-    this.players = []
+export default class Updater {
+  constructor () {
+    this.player = null
     this.blocks = []
     this.map = null
     this.keys = {}
@@ -16,32 +16,16 @@ class Updater {
     this.ctx.fillRect(entity.position.x, entity.position.y, entity.width, entity.height)
   }
 
-  updatePlayersData (playersData) {
-    for (const [_id, _player] of Object.entries(playersData)) {
-      const curPlayer = this.players.find(el => el.id === _id)
-      for (const [prop, value] of Object.entries(_player)) {
-        if (prop === 'position') {
-          curPlayer.pos = value
-        } else if (!['isEnemy', 'color'].includes(prop)) {
-          curPlayer[prop] = value
-        }
-      }
-    }
-  }
-
   streamDrawing () {
     for (const block of this.map.blocks) {
       this.draw(block)
     }
 
-    for (const player of this.players) {
-      this.draw(player)
-    }
+    this.draw(this.player)
   }
 
   initCamera () {
-    const { ctx, players, socket } = this
-    const player = players.find(el => el.id === socket.id)
+    const { ctx, player } = this
     ctx.translate(gameField.width / 2 - player.position.x, gameField.height / 2 - player.position.y)
   }
 
@@ -55,20 +39,24 @@ class Updater {
     this.ctx.restore()
   }
 
-  update (playersData) {
+  update () {
     this.streamStart()
     this.initCamera()
-    this.updatePlayersData(playersData)
+
+    this.player.handleKeys(this.keys)
+    this.player.handleMovements()
+    for (const block of this.map.blocks) {
+      const [playerCollide, blockCollide] = colCheck(this.player, block)
+      this.player.isCollide = playerCollide
+      this.player.colCheck()
+      block.isCollide = blockCollide
+    }
     this.streamDrawing()
     this.streamEnd()
+    requestAnimationFrame(this.update.bind(this))
   }
 
   init () {
-    this.socket.on('update', (playersData) => {
-      this.socket.emit('keyPressed', this.keys, this.socket.id)
-      this.update(playersData)
-    })
+    this.update()
   }
 }
-
-module.exports = Updater
