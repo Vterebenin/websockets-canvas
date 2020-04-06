@@ -41,6 +41,7 @@ export default class Player {
     this.moved = false
 
     if (keys[87] || keys[32]) { // Прыжок <пробел> или <вверх>
+      // this commentjh, says that im cool
       // up arrow
       this.moved = true
       if (!this.jumping) {

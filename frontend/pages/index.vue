@@ -8,6 +8,7 @@ import Updater from '~/sockets/engine/classes/Updater'
 import Map from '~/sockets/engine/classes/Map'
 import Block from '~/sockets/engine/classes/Block'
 import Player from '~/sockets/engine/classes/Player'
+import BlindForest from '~/static/maps/blindForest.json'
 
 export default {
   data () {
@@ -33,7 +34,7 @@ export default {
   },
   methods: {
     handleSetMap (canvas) {
-      const map = new Map({ name: 'Blind forest' })
+      const map = new Map({ name: 'Blind forest', tileMap: BlindForest })
       map.blocks.push(new Block({
         width: 300,
         height: 50,

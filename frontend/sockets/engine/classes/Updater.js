@@ -39,9 +39,31 @@ export default class Updater {
     this.ctx.restore()
   }
 
+  drawTileMap () {
+    const { width, height, layers, tilewidth, tileheight } = this.map.tileMap
+    for (const layer of layers) {
+      const { id } = layer
+      let counter = 0
+      for (let i = 0; i < width; i++) {
+        for (let j = 0; j < height; j++) {
+          const tileNumber = j * height + i + 1
+          if (layer.data[tileNumber] !== 0) {
+            const nonEmptyTileNumber = layer.data[tileNumber]
+            const tileset = this.map.tilesets.find(el => el.id === id)
+            const { image, sx, sy, sWidth, sHeight, dWidth, dHeight } = tileset.tileData[nonEmptyTileNumber]
+            counter++
+            this.ctx.drawImage(image, sx, sy, sWidth, sHeight, i * tilewidth, j * tileheight, dWidth, dHeight)
+            // console.log(layer.data[j * height + i])
+          }
+        }
+      }
+      console.log(counter)
+    }
+  }
+
   update () {
     this.streamStart()
-    this.initCamera()
+    // this.initCamera()
 
     this.player.handleKeys(this.keys)
     this.player.handleMovements()
@@ -52,11 +74,13 @@ export default class Updater {
       block.isCollide = blockCollide
     }
     this.streamDrawing()
+    this.drawTileMap()
     this.streamEnd()
     requestAnimationFrame(this.update.bind(this))
   }
 
   init () {
+    this.map.parseTileMap()
     this.update()
   }
 }
