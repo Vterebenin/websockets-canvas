@@ -4,7 +4,7 @@ export default class Map {
     this.name = props.name
     this.gameField = {
       width: 1920,
-      height: 1080
+      height: 1088
     }
     this.ctx = null
     this.tileMap = props.tileMap

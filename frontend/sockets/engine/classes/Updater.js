@@ -46,18 +46,19 @@ export default class Updater {
       let counter = 0
       for (let i = 0; i < width; i++) {
         for (let j = 0; j < height; j++) {
-          const tileNumber = j * height + i + 1
+          const tileNumber = j * width + i
           if (layer.data[tileNumber] !== 0) {
             const nonEmptyTileNumber = layer.data[tileNumber]
             const tileset = this.map.tilesets.find(el => el.id === id)
             const { image, sx, sy, sWidth, sHeight, dWidth, dHeight } = tileset.tileData[nonEmptyTileNumber]
             counter++
+            console.log(i, j, nonEmptyTileNumber)
             this.ctx.drawImage(image, sx, sy, sWidth, sHeight, i * tilewidth, j * tileheight, dWidth, dHeight)
             // console.log(layer.data[j * height + i])
           }
         }
       }
-      console.log(counter)
+      console.log(counter, layer.data)
     }
   }
 
